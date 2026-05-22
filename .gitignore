@@ -1,0 +1,13 @@
+.venv/
+__pycache__/
+*.pyc
+.ipynb_checkpoints/
+
+data/mvtec_ad/
+wandb/
+outputs/
+multirun/
+
+*.ckpt
+*.pth
+*.pt
