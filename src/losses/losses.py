@@ -2,6 +2,10 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 
+"""
+esto permite comparar cual función de pérdida produce mejores
+reconstrucciones para el dataset mvtec ad
+"""
 
 def ssim_loss(predictions, targets, C1=0.01**2, C2=0.03**2):
     """
@@ -42,21 +46,25 @@ def ssim_loss(predictions, targets, C1=0.01**2, C2=0.03**2):
 
 
 class L1Loss(nn.Module):
+    # mide diferencia absoluta media entre predicciones y objetivos
     def forward(self, predictions, targets):
         return F.l1_loss(predictions, targets)
 
 
 class L2Loss(nn.Module):
+    # mide diferencia cuadrática media entre predicciones y objetivos
     def forward(self, predictions, targets):
         return F.mse_loss(predictions, targets)
 
 
 class SSIMLoss(nn.Module):
+    # mide similitud estructural entre predicciones y objetivos
     def forward(self, predictions, targets):
         return ssim_loss(predictions, targets)
 
 
 class SSIML1Loss(nn.Module):
+    # combina SSIM y L1
     def __init__(self, alpha=0.8):
         super().__init__()
         self.alpha = alpha
@@ -69,6 +77,7 @@ class SSIML1Loss(nn.Module):
 
 
 def get_loss(loss_name: str):
+    # devuelve la función de pérdida segun el nombre, para seleccionarlo desde hydra
     losses = {
         "l1": L1Loss,
         "l2": L2Loss,

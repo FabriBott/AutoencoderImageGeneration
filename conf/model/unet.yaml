@@ -1,0 +1,4 @@
+name: unet
+input_channels: 3
+latent_dim: 128
+kl_weight: 0.0
