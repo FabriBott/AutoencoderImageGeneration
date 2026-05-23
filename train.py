@@ -68,4 +68,37 @@ if __name__ == "__main__":
     main()
 
 
-# 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
+# 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"
+
+"""
+1. Hydra lee los YAML
+   ↓
+2. train.py recibe cfg
+   ↓
+3. train.py crea MVTecDataModule
+   ↓
+4. MVTecDataModule crea MVTecDataset
+   ↓
+5. train.py crea AutoencoderModule
+   ↓
+6. AutoencoderModule crea VAE y L1Loss
+   ↓
+7. train.py crea Trainer
+   ↓
+8. Trainer llama datamodule.train_dataloader()
+   ↓
+9. DataLoader usa MVTecDataset para cargar imágenes
+   ↓
+10. Trainer llama training_step()
+   ↓
+11. AutoencoderModule pasa imágenes al VAE
+   ↓
+12. VAE reconstruye imágenes
+   ↓
+13. AutoencoderModule calcula loss
+   ↓
+14. Lightning actualiza pesos
+   ↓
+15. WandB guarda métricas
+
+"""

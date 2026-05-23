@@ -158,3 +158,19 @@ class AutoencoderModule(pl.LightningModule):
         )
 
         return optimizer
+    
+    """
+configurar el entrenamiento
+=
+crear modelo
+crear loss
+crear optimizador
+
+y además
+
+ejecutar el entrenamiento
+ejecutar validación
+ejecutar test
+calcular pérdidas
+registrar métricas
+    """
