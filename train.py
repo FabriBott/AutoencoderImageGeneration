@@ -43,6 +43,7 @@ def main(cfg: DictConfig):
         entity=cfg.logger.entity,
         name=run_name,
         log_model=cfg.logger.log_model,
+      group=cfg.logger.group,
     )
 
     trainer = pl.Trainer(
