@@ -1,4 +1,4 @@
-max_epochs: 5
+max_epochs: 8
 learning_rate: 0.001
 accelerator: auto
 devices: 1
