@@ -33,8 +33,12 @@ def build_test_grid(images, reconstructions, labels, max_images=16):
         return None
 
     num_each = max_images // 2
+    good_rnd_indices = np.random.permutation(len(good_idx))
+    defect_rnd_indices = np.random.permutation(len(defect_idx))
+    good_idx_shuffled = good_idx[good_rnd_indices]
+    defect_idx_shuffled = defect_idx[defect_rnd_indices]
     selected = torch.cat(
-        [good_idx[:num_each], defect_idx[:num_each]],
+        [good_idx_shuffled[:num_each], defect_idx_shuffled[:num_each]],
         dim=0,
     )
 
