@@ -64,7 +64,7 @@ def main(cfg: DictConfig):
         datamodule=datamodule,
     )
 
-    wandb.finish()
+    logger.experiment.finish()
 
 
 if __name__ == "__main__":
