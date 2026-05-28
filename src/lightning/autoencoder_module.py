@@ -325,7 +325,7 @@ class AutoencoderModule(pl.LightningModule):
                 histogram_groups.setdefault(class_name, {}).setdefault("good_errors", []).append(error)
             else:
                 defect_errors_by_type.setdefault(defect_type, []).append(error)
-                histogram_groups.setdefault(class_name, {}).setdefault("defect_errors", {}).setdefault("defect_type", []).append(error)
+                histogram_groups.setdefault(class_name, {}).setdefault("defect_errors", {}).setdefault(defect_type, []).append(error)
 
         hist_figs = visualizations.plot_error_histograms(
             good_errors,
