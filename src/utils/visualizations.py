@@ -183,8 +183,20 @@ def plot_error_histograms_wandb(histogram_groups, bins=30):
     for class_name, errors_dict in histogram_groups.items():
 
         for defect_type, errors in errors_dict["defect_errors"].items():
-            data = [[errors]]
-            table = wandb.Table(data=data, columns=["Defect error"])
-            figs.append((class_name, defect_type, table))
+            #data = [[errors]]
+            #table = wandb.Table(data=data, columns=["Defect error"])
+            #figs.append((class_name, defect_type, table))
+
+            fig, ax = plt.subplots(figsize=(6, 4))
+            ax.hist(errors_dict["good_errors"], bins=bins, alpha=0.6, label="good")
+            ax.hist(errors, bins=bins, alpha=0.6, label=defect_type)
+            ax.set_title(f"Reconstruction error: good {class_name} vs {defect_type}")
+            ax.set_xlabel("reconstruction error")
+            ax.set_ylabel("count")
+            ax.legend()
+            fig.tight_layout()
+
+            figs.append((class_name, defect_type, fig))
+            
 
     return figs

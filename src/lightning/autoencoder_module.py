@@ -334,11 +334,18 @@ class AutoencoderModule(pl.LightningModule):
 
         hist_tables_wandb = visualizations.plot_error_histograms_wandb(histogram_groups)
 
-        for class_name, defect_type, table in hist_tables_wandb:
+        '''for class_name, defect_type, table in hist_tables_wandb:
             wandb_logger.experiment.log(
                 {f"test/wberror_hist_{class_name}_{defect_type}": 
                  wandb.plot.histogram(table, "Reconstruction error",
                                       title=f"Reconstruction error: good vs {defect_type}")},
+                 step=self.global_step,
+            )
+        '''
+            
+        for class_name, defect_type, fig in hist_tables_wandb:
+            wandb_logger.experiment.log(
+                {f"test/wberror_hist_{class_name}_{defect_type}": wandb.Image(fig)},
                  step=self.global_step,
             )
 
