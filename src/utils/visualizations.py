@@ -1,3 +1,4 @@
+import wandb
 import numpy as np
 import torch
 import matplotlib.pyplot as plt
@@ -103,6 +104,51 @@ def plot_tsne(z, labels, max_points=500, random_state=42):
     fig.tight_layout()
 
     return fig
+
+def plot_tsne_wandb(z, labels, max_points=500, random_state=42):
+    if z.size(0) < 2:
+        return None
+
+    if z.size(0) < 5:
+        return None
+
+    if z.size(0) > max_points:
+        idx = torch.randperm(z.size(0))[:max_points]
+        z = z[idx]
+        labels = [labels[i] for i in idx.tolist()]
+
+    z_np = z.cpu().numpy()
+    labels_np = np.array(labels)
+
+    perplexity = min(5, z_np.shape[0] - 1)
+
+    tsne = TSNE(
+        n_components=2,
+        init="pca",
+        learning_rate="auto",
+        perplexity=perplexity,
+        random_state=random_state,
+    )
+
+    embedding = tsne.fit_transform(z_np)
+
+    columns = ["x", "y"]
+    if labels is not None:
+        columns.append("label")
+
+    table = wandb.Table(columns=columns)
+
+    for i, (x, y) in enumerate(embedding):
+        row = [x, y]
+        if labels is not None:
+            label = labels[i]
+            row.append(label)
+        table.add_data(*row)
+
+    for label in sorted(set(labels_np)):
+        mask = labels_np == label
+
+    return table
 
 
 def plot_error_histograms(good_errors, defect_errors_by_type, bins=30):

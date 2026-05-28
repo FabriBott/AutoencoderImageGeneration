@@ -271,6 +271,19 @@ class AutoencoderModule(pl.LightningModule):
                     {"val/tsne": wandb.Image(fig)},
                     step=self.global_step,
                 )
+            
+            table = visualizations.plot_tsne_wandb(
+                z,
+                labels,
+                max_points=self.max_tsne_samples
+                )
+            if table is not None:
+                wandb_logger.experiment.log(
+                    {"val/tsne_wandb": wandb.plot.scatter(
+                        table, "x", "y",
+                        title="t-SNE"
+                    )}
+                )
 
     def on_test_epoch_end(self):
         wandb_logger = self._get_wandb_logger()
