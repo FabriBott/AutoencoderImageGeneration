@@ -279,10 +279,8 @@ class AutoencoderModule(pl.LightningModule):
                 )
             if table is not None:
                 wandb_logger.experiment.log(
-                    {"val/tsne_wandb": wandb.plot.scatter(
-                        table, "x", "y",
-                        title="t-SNE"
-                    )}
+                    {"val/tsne_table": table},
+                    step=self.global_step,
                 )
 
     def on_test_epoch_end(self):
