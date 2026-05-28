@@ -184,7 +184,7 @@ def plot_error_histograms_wandb(histogram_groups, bins=30):
 
         for defect_type, errors in errors_dict["defect_errors"].items():
             data = [errors_dict["good_errors"], errors]
-            table = wandb.Table(data=data, columns=["Reconstruction error"])
+            table = wandb.Table(data=data, columns=["Good error", "Defect error"])
             figs.append((class_name, defect_type, table))
 
     return figs
