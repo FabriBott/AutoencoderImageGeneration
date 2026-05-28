@@ -57,6 +57,7 @@ class AutoencoderModule(pl.LightningModule):
         self._test_errors = []
         self._test_labels_all = []
         self._test_defect_types = []
+        self._test_class_names = []
 
         if model_name == "vae":
             self.model = VAE(
@@ -211,6 +212,7 @@ class AutoencoderModule(pl.LightningModule):
         self._test_errors.extend(per_sample_error.detach().cpu().tolist())
         self._test_labels_all.extend(output["label"].detach().cpu().tolist())
         self._test_defect_types.extend(list(output["defect_type"]))
+        self._test_class_names.extend(list(output["class_name"]))
 
         return output
 
@@ -236,6 +238,7 @@ class AutoencoderModule(pl.LightningModule):
         self._test_errors = []
         self._test_labels_all = []
         self._test_defect_types = []
+        self._test_class_names = []
 
     def on_validation_epoch_end(self):
         wandb_logger = self._get_wandb_logger()
@@ -308,21 +311,36 @@ class AutoencoderModule(pl.LightningModule):
 
         good_errors = []
         defect_errors_by_type = {}
+        histogram_groups = {}
 
-        for error, label, defect_type in zip(
+        for error, label, defect_type, class_name in zip(
             self._test_errors,
             self._test_labels_all,
             self._test_defect_types,
+            self._test_class_names
         ):
+            
             if label == 0:
                 good_errors.append(error)
+                histogram_groups.setdefault(class_name, {}).setdefault("good_errors", []).append(error)
             else:
                 defect_errors_by_type.setdefault(defect_type, []).append(error)
+                histogram_groups.setdefault(class_name, {}).setdefault("defect_errors", {}).setdefault("defect_type", []).append(error)
 
         hist_figs = visualizations.plot_error_histograms(
             good_errors,
             defect_errors_by_type,
         )
+
+        hist_tables_wandb = visualizations.plot_error_histograms_wandb(histogram_groups)
+
+        for class_name, defect_type, table in hist_tables_wandb:
+            wandb_logger.experiment.log(
+                {f"test/wberror_hist_{class_name}_{defect_type}": 
+                 wandb.plot.histogram(table, "Reconstruction error",
+                                      title=f"Reconstruction error: good vs {defect_type}")},
+                 step=self.global_step,
+            )
 
         for defect_type, fig in hist_figs:
             wandb_logger.experiment.log(
