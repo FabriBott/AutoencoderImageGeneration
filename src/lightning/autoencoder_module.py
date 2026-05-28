@@ -334,6 +334,8 @@ class AutoencoderModule(pl.LightningModule):
 
         hist_tables_wandb = visualizations.plot_error_histograms_wandb(histogram_groups)
 
+        hist_compare_errors = visualizations.plot_compare_error_histograms_wandb(histogram_groups)
+
         '''for class_name, defect_type, table in hist_tables_wandb:
             wandb_logger.experiment.log(
                 {f"test/wberror_hist_{class_name}_{defect_type}": 
@@ -349,11 +351,17 @@ class AutoencoderModule(pl.LightningModule):
                  step=self.global_step,
             )
 
-        for defect_type, fig in hist_figs:
+        for class_name, fig in hist_compare_errors:
+            wandb_logger.experiment.log(
+                {f"test/wberror_compare_hist_{class_name}": wandb.Image(fig)},
+                 step=self.global_step,
+            )
+
+        '''for defect_type, fig in hist_figs:
             wandb_logger.experiment.log(
                 {f"test/error_hist_{defect_type}": wandb.Image(fig)},
                 step=self.global_step,
-            )
+            )'''
 
         metrics = self.trainer.callback_metrics
         test_loss = metrics.get("test/loss")

@@ -200,3 +200,28 @@ def plot_error_histograms_wandb(histogram_groups, bins=30):
             
 
     return figs
+
+def plot_compare_error_histograms_wandb(histogram_groups, bins=30):
+    figs = []
+
+    if len(histogram_groups) < 1:
+        return figs
+
+
+    for class_name, errors_dict in histogram_groups.items():
+        fig, ax = plt.subplots(figsize=(6, 4))
+
+        for defect_type, errors in errors_dict["defect_errors"].items():
+            ax.hist(errors, bins=bins, alpha=0.6, label=defect_type)
+
+        ax.set_title(f"Reconstruction error comparison: {class_name}")
+        ax.set_xlabel("reconstruction error")
+        ax.set_ylabel("count")
+        ax.legend()
+        fig.tight_layout()
+
+        figs.append((class_name, fig))
+            
+
+    return figs
+
